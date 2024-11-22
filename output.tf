@@ -31,3 +31,8 @@ output "rules" {
   } ]
   description = "List of load balancer rules"
 }
+
+output "networks" {
+  value = upcloud_loadbalancer.main.networks
+  description = "Load balancer networks"
+}
