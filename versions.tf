@@ -4,7 +4,7 @@ terraform {
   required_providers {
     upcloud = {
       source  = "UpCloudLtd/upcloud"
-      version = ">= 5.10.0"
+      version = ">= 5.25.0"
     }
   }
 }

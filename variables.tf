@@ -3,10 +3,19 @@ variable "zone" {
   description = "UpCloud zone"
 }
 
+variable "public_network" {
+  type = object({
+    name: optional(string, "public-net")
+    family: optional(string, "IPv4")
+  })
+  description = "Public network to attach the load balancer to"
+  default = null
+}
+
 variable "private_network" {
   type = object({
-    name: string
     id: string
+    name: string
     family: optional(string, "IPv4")
   })
   description = "Private network to attach the load balancer to"

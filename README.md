@@ -9,12 +9,23 @@ The backend members are set statically by specifying the IPs and ports.
 
 ## Requirements
 - Terraform version `>= 1.6.0`
-- UpCloud Provider version `>= 5.10.0`
+- UpCloud Provider version `>= 5.25.0`
 
 
 ## Examples
 
 ```hcl
+terraform {
+  required_version = ">= 1.6.0"
+
+  required_providers {
+    upcloud = {
+      source  = "UpCloudLtd/upcloud"
+      version = ">= 5.25.0"
+    }
+  }
+}
+
 provider "upcloud" {
   username = var.upcloud_username
   password = var.upcloud_password
@@ -22,18 +33,23 @@ provider "upcloud" {
                                         
 module "loadbalancer" {
   source  = "lukibsubekti/loadbalancer-static/upcloud"
-  version = "1.0.0"
+  version = "1.0.3"
 
   zone = var.upcloud_zone
   name = "my-loadbalancer"
 
   private_network = {
-    name = "private-net"
     id = "PRIVATE_NETWORK_ID"
+    name = "private-net"
+  }
+
+  # public network is optional
+  public_network = {
+    name = "public-net"
   }
 
   backends = {
-    "web1" = [
+    "SOMENAME1" = [
       {
         ip = "10.0.0.10"
         port = 3001
@@ -43,7 +59,7 @@ module "loadbalancer" {
         port = 3002
       },
     ]
-    "web2" = [
+    "SOMENAME2" = [
       {
         ip = "10.0.0.30"
         port = 3000
@@ -55,17 +71,17 @@ module "loadbalancer" {
     "http" = {
       mode = "http"
       port = 80
-      default_backend = "web1"
+      default_backend = "SOMENAME1"
     }
     "https" = {
       mode = "http"
       port = 443
-      default_backend = "web1"
+      default_backend = "SOMENAME2"
     }
   }
 
   rules = {
-    "rule1" = {
+    "SOMERULE1" = {
       frontend = "http"
       priority = 80
       matching_condition = "or"
@@ -99,7 +115,7 @@ module "loadbalancer" {
 
       actions = {
         use_backend = {
-          backend_name = "web1"
+          backend_name = "SOMENAME1"
         }
         set_forwarded_headers = {
           active = true
@@ -119,3 +135,7 @@ module "loadbalancer" {
   }
 }
 ```
+
+## License
+
+MIT License. See LICENSE for full details.

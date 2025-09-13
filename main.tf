@@ -4,19 +4,23 @@ resource "upcloud_loadbalancer" "main" {
   plan              = var.plan     # required
   zone              = var.zone  # required
 
-  networks {
-    name   = "public-net"
-    type   = "public"
-    family = "IPv4"
+  dynamic "networks" {
+    for_each = var.public_network != null ? [var.public_network] : []
+
+    content {
+      type = "public"   # required
+      name = networks.value.name != null ? networks.value.name : "public-net" # optional
+      family = networks.value.family != null ? networks.value.family : "IPv4" # optional
+    }
   }
 
   dynamic "networks" {
     for_each = var.private_network != null ? [var.private_network] : []
 
     content {
+      type    = "private"   # required
       name = networks.value.name # required
       network = networks.value.id 
-      type    = "private"   # required
       family  = networks.value.family # required
     }
   }
